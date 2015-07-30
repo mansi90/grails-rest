@@ -2,7 +2,7 @@
 grails:
     profile: web-plugin
     codegen:
-        defaultPackage: grails.rest
+        defaultPackage: org.grails.plugins.rest.ssl
 info:
     app:
         name: '@info.app.name@'

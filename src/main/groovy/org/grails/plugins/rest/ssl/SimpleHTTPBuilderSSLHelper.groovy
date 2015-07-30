@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException
 import java.security.UnrecoverableKeyException
 import org.apache.http.conn.scheme.Scheme
 import org.apache.http.conn.ssl.SSLSocketFactory
-import static org.grails.plugins.rest.ssl.HTTPBuilderSSLConstants.*
+import static HTTPBuilderSSLConstants.*
 
 /**
  * Through its main method   {@link SimpleHTTPBuilderSSLHelper#addSSLSupport}   and using a   {@link KeyStoreFactory}
@@ -19,7 +19,7 @@ import static org.grails.plugins.rest.ssl.HTTPBuilderSSLConstants.*
  * keys hosted inside the <i>ConfigObject</i>.
  * @see org.apache.http.conn.ssl.SSLSocketFactory
  * @see org.apache.http.conn.scheme.Scheme
- * @see org.grails.plugins.rest.ssl.SimpleKeyStoreFactory
+ * @see SimpleKeyStoreFactory
  * @author berngp
  * @since 0.6
  */
@@ -41,7 +41,7 @@ class SimpleHTTPBuilderSSLHelper implements HTTPBuilderSSLHelper {
    *   </ul>
    * @see org.apache.http.conn.ssl.SSLSocketFactory
    * @see org.apache.http.conn.scheme.Scheme
-   * @see org.grails.plugins.rest.ssl.SimpleKeyStoreFactory
+   * @see SimpleKeyStoreFactory
    */
   HTTPBuilder addSSLSupport(ConfigObject config, HTTPBuilder builder) {
     if (!builder) {

@@ -1,4 +1,4 @@
-package grails.rest
+package org.grails.plugins.rest.ssl
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
