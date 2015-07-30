@@ -26,8 +26,8 @@ apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 // Used for publishing to central repository, remove if not needed
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
+apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
+apply from: 'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 ext {
     grailsVersion = project.grailsVersion
@@ -39,6 +39,8 @@ targetCompatibility = 1.7
 
 
 repositories {
+    mavenCentral()
+    maven { url 'http://repository.codehaus.org' }
     mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
@@ -64,6 +66,12 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
 
     console "org.grails:grails-console"
+
+    compile('org.codehaus.groovy.modules.http-builder:http-builder:0.7.1') {
+        exclude module : "commons-logging"
+        exclude module : "xml-apis"
+        exclude module : "xml-apis"
+    }
 }
 
 task wrapper(type: Wrapper) {
