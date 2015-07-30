@@ -1,3 +1,7 @@
+package org.grails.plugins.rest.ssl
+
+import grails.plugins.Plugin
+
 /*
  * Copyright 2009-2010 the original author or authors.
  *
@@ -28,9 +32,13 @@ import org.grails.plugins.rest.ssl.SimpleHTTPBuilderSSLHelper
 /**
  * @author Andres.Almiray
  */
-class RestGrailsPlugin {
-	def version = "0.9"
-	def grailsVersion = "2.0 > *"
+class RestGrailsPlugin extends Plugin{
+	def grailsVersion = "3.0.2 > *"
+
+    // resources that are excluded from plugin packaging
+    def pluginExcludes = [
+            "grails-app/views/error.gsp"
+    ]
 
 	def title = "Grails REST Plugin"
 	def description = 'Adds REST client capabilities to your Grails application.'
@@ -42,7 +50,8 @@ class RestGrailsPlugin {
 	def developers = [
 		[name: "Andres Almiray", email: "aalmiray@users.sourceforge.net"],
 		[name: "Bernardo Gomez-Palacio", email: "bernardo.gomezpalacio@gmail.com"],
-		[name: "Marco Vermeulen", email: "vermeulen.mp@gmail.com"]
+		[name: "Marco Vermeulen", email: "vermeulen.mp@gmail.com"],
+		[name: "Mansi Arora", email: "mansi.arora@tothenew.com"]
 	]
 	def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPREST" ]
 	def scm = [ url: "https://github.com/berngp/grails-rest" ]
