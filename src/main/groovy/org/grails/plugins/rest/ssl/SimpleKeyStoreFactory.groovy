@@ -136,7 +136,6 @@ class SimpleKeyStoreFactory implements KeyStoreFactory {
   Map getTrustStoreModel(ConfigObject config) {
     // Lets try to get a path from the config and if not set it to a default.
       def path = config?.https?.truststore?.path ?: (this.defaultTrustStoreHome + File.separator + DEFAULT_TRUSTSTORE)
-      println(path)
       def passwd = config?.https?.truststore?.pass
 
     getKeyStoreInternal(path, passwd)
