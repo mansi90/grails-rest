@@ -23,7 +23,7 @@ class SimpleKeyStoreFactory implements KeyStoreFactory {
   /** Default Key Store file.   */
   private static final String DEFAULT_KEYSTORE = ".keystore"
   /** Default Trust Store Classpath file.  */
-  private static final String DEFAULT_CLASSPATH_TRUSTSTORE = "/truststore.jks"
+  private static final String DEFAULT_TRUSTSTORE = "truststore.jks"
   /** Set of common default Key/Trust Store files passwords.   */
   private static final Set COMMON_PASSWORDS = (['', 'changeit', 'changeme'] as Set).asImmutable()
 
@@ -65,7 +65,7 @@ class SimpleKeyStoreFactory implements KeyStoreFactory {
    */
   private Map getKeyStoreInternal(path, knownPasswd ){
     // We need a ref to a Resource
-    def resource
+     FileSystemResource resource
     // lets try first through the path
     if (path) {
       //lets see if a resource is available through the Classpath.
@@ -110,6 +110,7 @@ class SimpleKeyStoreFactory implements KeyStoreFactory {
    * as seen by System.getProperty('user.home').
    */
   protected getDefaultKeyStoreHome() { return System.getProperty('user.home') }
+  protected getDefaultTrustStoreHome() { return System.getProperty('user.home') }
 
   /**
    * Looks for the <i>Key Store</i> file, loads it, and generates a Map from it as specified in the  {@link #getKeyStoreInternal}   method.
@@ -119,22 +120,24 @@ class SimpleKeyStoreFactory implements KeyStoreFactory {
    * If none we will try to guess using common default keystore passwords as defined by the  {@link #COMMON_PASSWORDS}  set.
    */
   Map getKeyStoreModel(ConfigObject config) {
-    def path = config?.https?.keystore?.path ?: "${this.defaultKeyStoreHome}/${DEFAULT_KEYSTORE}"
-    def passwd = config?.https?.keystore?.pass
+      // Lets try to get a path from the config and if not set it to a default.
+      def path = config?.https?.keystore?.path ?: (this.defaultKeyStoreHome + File.separator + DEFAULT_KEYSTORE)
+      def passwd = config?.https?.keystore?.pass
 
     getKeyStoreInternal(path, passwd)
   }
   /**
    * Looks for the <i>Trust Store</i> file, loads it, and generates a Map from it as specified in the   {@link #getKeyStoreInternal}   method.
    * The <code>config:ConfigObject</code> may specify a path for the Trust Store through <i>https.truststore.path</i>, if none is specified it
-   * will use   {@link #DEFAULT_CLASSPATH_TRUSTSTORE}  . In the same manner a password for such Trust Store might be specified through <i>https.truststore.pass</i>,
+   * will use a path defined as "<i>Default Key Store Home ( see  {@link #getDefaultTrustStoreHome()}  )</i><b>/</b><i>( value of   {@link #DEFAULT_TRUSTSTORE} </i> " .
+   * In the same manner a password for such Trust Store might be specified through <i>https.truststore.pass</i>,
    * If none we will try to guess using common default keystore passwords.
    */
   Map getTrustStoreModel(ConfigObject config) {
-
     // Lets try to get a path from the config and if not set it to a default.
-    def path = config?.https?.truststore?.path ?: DEFAULT_CLASSPATH_TRUSTSTORE
-    def passwd = config?.https?.truststore?.pass
+      def path = config?.https?.truststore?.path ?: (this.defaultTrustStoreHome + File.separator + DEFAULT_TRUSTSTORE)
+      println(path)
+      def passwd = config?.https?.truststore?.pass
 
     getKeyStoreInternal(path, passwd)
   }

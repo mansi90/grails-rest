@@ -5,60 +5,80 @@
 
 package org.grails.plugins.rest.ssl
 
-import grails.test.GrailsUnitTestCase
+import spock.lang.Specification
 
 /**
  * @author berngp
  */
-class SimpleKeyStoreFactoryTests extends GrailsUnitTestCase {
+class SimpleKeyStoreFactoryTests extends Specification {
+    Map KEYSTORE_CONFIG = [:], TRUSTSTORE_CONFIG = [:]
 
-  String KEYSTORE_CONFIG = '''
-    https.keystore.path='test/resources/certs/keystore.jks'
-    https.keystore.pass='test1234'
-    '''
+    def setup() {
+        File keyStoreFile = new File('grails-app/conf/resources/certs/keystore.jks'),
+             trustStoreFile = new File('grails-app/conf/resources/certs/truststore.jks')
 
-  String TRUSTSTORE_CONFIG = '''
-    https.truststore.path='test/resources/certs/truststore.jks'
-    https.truststore.pass='test1234'
-    '''
+        KEYSTORE_CONFIG = [https: [keystore: [path: keyStoreFile.path, pass: 'test1234']]]
+        TRUSTSTORE_CONFIG = [https: [truststore: [path: trustStoreFile.path, pass: 'test1234']]]
 
-  void testGetKeyStoreFromConf() {
-    def config = mockConfig(KEYSTORE_CONFIG)
-
-    SimpleKeyStoreFactory sksf = new SimpleKeyStoreFactory()
-    def keyStoreModel = sksf.getKeyStoreModel(config)
-    assert keyStoreModel.keystore, "KeyStore expected"
-  }
-
-  void testGetKeyStoreFromDefault() {
-
-    def config = mockConfig('')
-
-    SimpleKeyStoreFactory.metaClass.getDefaultKeyStoreHome = {
-      'test/resources/certs'
     }
 
-    SimpleKeyStoreFactory sksf = new SimpleKeyStoreFactory()
+    void testGetKeyStoreFromConf() {
+        given:
+        ConfigObject configObject = new ConfigObject()
+        configObject.putAll(KEYSTORE_CONFIG)
 
-    def keyStoreModel = sksf.getKeyStoreModel(config)
-    assert keyStoreModel.keystore, "KeyStore expected "
-    assert keyStoreModel.path == "test/resources/certs/.keystore"
-  }
+        when:
+        SimpleKeyStoreFactory sksf= new SimpleKeyStoreFactory()
 
-  void testGetTrustStoreFromConf() {
-    def config = mockConfig(TRUSTSTORE_CONFIG)
+        def keyStoreModel = sksf.getKeyStoreModel(configObject)
 
-    SimpleKeyStoreFactory sksf = new SimpleKeyStoreFactory()
-    def trustStoreModel = sksf.getTrustStoreModel(config)
-    assert trustStoreModel.keystore, "KeyStore expected"
-  }
+        then:
+        assert keyStoreModel.keystore, "KeyStore expected"
+    }
 
-  void testGetTrustStoreFromDefault() {
-    def config = mockConfig('')
+    void testGetKeyStoreFromDefault() {
+        given:
+        ConfigObject configObject = new ConfigObject()
 
-    SimpleKeyStoreFactory sksf = new SimpleKeyStoreFactory()
-    def trustStoreModel = sksf.getTrustStoreModel(config)
-    assert trustStoreModel.keystore, "KeyStore expected"
-    assert trustStoreModel.path == '/truststore.jks'
-  }
+        SimpleKeyStoreFactory.metaClass.getDefaultKeyStoreHome = {
+            'grails-app/conf/resources/certs'
+        }
+
+        when:
+        SimpleKeyStoreFactory sksf= new SimpleKeyStoreFactory()
+        def keyStoreModel = sksf.getKeyStoreModel(configObject)
+
+        then:
+        assert keyStoreModel.keystore, "KeyStore expected "
+        assert keyStoreModel.path == "grails-app/conf/resources/certs/.keystore"
+    }
+
+    void testGetTrustStoreFromConf() {
+        given:
+        ConfigObject configObject = new ConfigObject()
+        configObject.putAll(TRUSTSTORE_CONFIG)
+
+        when:
+        SimpleKeyStoreFactory sksf= new SimpleKeyStoreFactory()
+        def trustStoreModel = sksf.getTrustStoreModel(configObject)
+
+        then:
+        assert trustStoreModel.keystore, "KeyStore expected"
+    }
+
+    void testGetTrustStoreFromDefault() {
+        given:
+        ConfigObject configObject = new ConfigObject()
+
+        SimpleKeyStoreFactory.metaClass.getDefaultTrustStoreHome = {
+            'grails-app/conf/resources'
+        }
+        when:
+        SimpleKeyStoreFactory sksf= new SimpleKeyStoreFactory()
+        def trustStoreModel = sksf.getTrustStoreModel(configObject)
+
+        then:
+        assert trustStoreModel.keystore, "KeyStore expected"
+        assert trustStoreModel.path == 'grails-app/conf/resources/truststore.jks'
+    }
 }
